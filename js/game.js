@@ -53,7 +53,7 @@ function Game() {
             'reindeer': 0,
             'yak': 0
         },
-        'money' : 100000000000,
+        'money' : 0,
         'watches' : 0
     };
 
