@@ -413,9 +413,10 @@ function Game() {
      */
     self.hire = function(type) {
         // Do we have enough money?
-        if (self.getMoney() >= self.help[type].cost) {
+        var cost = self.getHelpCost(type);
+        if (self.getMoney() >= cost) {
             self.addHelp(type);
-            self.removeMoney(self.help[type].cost);
+            self.removeMoney(cost);
 
             self.updateViews();
             self.updateHelpViews();
