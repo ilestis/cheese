@@ -36,7 +36,12 @@ $improvements = require('improvements.php');
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li id="money">0</li>
-                    <li id="watches" style="display:none;">0</li>
+                    <li id="accounts">0</li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <button class="btn btn-sm btn-primary" id="save">Save</button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -45,12 +50,16 @@ $improvements = require('improvements.php');
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-3 col-md-2 sidebar">
+                <a href="#" id="sell_all_2" class="btn btn-sm pull-right btn-primary">Sell all</a>
                 <ul class="nav nav-sidebar">
                     <li class="mountain">
                         <div class="cow" id="cow"></div>
 
                     </li>
-                    <li class="flag" id="flag" style="display:none;"></li>
+                    <li class="flag" id="flag"></li>
+                    <li>
+                        <div id="watch_bonus" class="watch_bonus bg-warning"></div>
+                    </li>
                 </ul>
             </div>
             <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -67,14 +76,14 @@ $improvements = require('improvements.php');
                 <ul class="nav nav-tabs" role="tablist" id="gameTabs">
                     <li role="presentation" class="active"><a href="#inventory" aria-controls="inventory" role="tab" data-toggle="tab">Inventory</a></li>
                     <li role="presentation"><a href="#farm_tab" aria-controls="farm_tab" role="tab" data-toggle="tab">Farm</a></li>
-                    <!--<li role="presentation"><a href="#watches_tab" aria-controls="watches_tab" role="tab" data-toggle="tab">Watches</a></li>-->
+                    <li role="presentation"><a href="#watches_tab" aria-controls="watches_tab" role="tab" data-toggle="tab">Watches</a></li>
                 </ul>
 
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="inventory">
 
                         <h2>Inventory</h2>
-                        <button id="sell_all" class="btn btn-sm btn-success pull-right">Sell All</button>
+                        <button id="sell_all" class="btn btn-sm btn-primary pull-right">Sell All</button>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -152,31 +161,31 @@ $improvements = require('improvements.php');
                             <tbody>
                             <tr>
                                 <td>Family</td>
-                                <td id="farm_family_amount"></td>
-                                <td id="farm_family_effect"></td>
-                                <td id="farm_family_cost"></td>
-                                <td><button id="farm_family_buy" class="btn btn-sm btn-primary">Hire</button></td>
+                                <td id="farming_family_amount"></td>
+                                <td id="farming_family_effect"></td>
+                                <td id="farming_family_cost"></td>
+                                <td><button id="farming_family_buy" class="btn btn-sm btn-primary">Hire</button></td>
                             </tr>
                             <tr>
                                 <td>Friend</td>
-                                <td id="farm_friend_amount"></td>
-                                <td id="farm_friend_effect"></td>
-                                <td id="farm_friend_cost"></td>
-                                <td><button id="farm_friend_buy" class="btn btn-sm btn-primary">Hire</button></td>
+                                <td id="farming_friend_amount"></td>
+                                <td id="farming_friend_effect"></td>
+                                <td id="farming_friend_cost"></td>
+                                <td><button id="farming_friend_buy" class="btn btn-sm btn-primary">Hire</button></td>
                             </tr>
                             <tr>
                                 <td>Professional</td>
-                                <td id="farm_professional_amount"></td>
-                                <td id="farm_professional_effect"></td>
-                                <td id="farm_professional_cost"></td>
-                                <td><button id="farm_professional_buy" class="btn btn-sm btn-primary">Hire</button></td>
+                                <td id="farming_professional_amount"></td>
+                                <td id="farming_professional_effect"></td>
+                                <td id="farming_professional_cost"></td>
+                                <td><button id="farming_professional_buy" class="btn btn-sm btn-primary">Hire</button></td>
                             </tr>
                             <tr>
                                 <td>Machine</td>
-                                <td id="farm_machine_amount"></td>
-                                <td id="farm_machine_effect"></td>
-                                <td id="farm_machine_cost"></td>
-                                <td><button id="farm_machine_buy" class="btn btn-sm btn-primary">Hire</button></td>
+                                <td id="farming_machine_amount"></td>
+                                <td id="farming_machine_effect"></td>
+                                <td id="farming_machine_cost"></td>
+                                <td><button id="farming_machine_buy" class="btn btn-sm btn-primary">Hire</button></td>
                             </tr>
                             </tbody>
                         </table>
@@ -216,6 +225,41 @@ $improvements = require('improvements.php');
 
                     <div role="tabpanel" class="tab-pane" id="watches_tab">
                         <h2>Watches</h2>
+
+                        <p>
+                            Watch level: <span id="watch_level">0</span> / 20
+                        </p>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" id="watch_progress" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+                                <span class="sr-only"></span>
+                            </div>
+                        </div>
+
+                        <h3>Improvements</h3>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Cost</th>
+                                <th>Required level</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody id="watch_improvements">
+                            <?php foreach ($improvements['watch'] as $id => $name) : ?>
+                                <tr id="watch_improvement_<?=$id?>">
+                                    <td><?=$name?></td>
+                                    <td id="watch_improvement_<?=$id?>_cost"></td>
+                                    <td id="watch_improvement_<?=$id?>_level"></td>
+                                    <td>
+                                        <button id="watch_improvement_<?=$id?>_buy" class="btn btn-sm btn-primary">
+                                            Buy
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

@@ -38,5 +38,17 @@ return [
         '20xp' => '20 XP per click',
         'professional4' => 'Professional 200% more milk',
         'machine4' => 'Machine 200% more milk'*/
+    ],
+    'watch' => [
+        'swatch' => 'Swatch Watch',
+        'frequency1' => 'Watches appear more often',
+        'duration1' => 'Watches are displayed longer',
+        'rare1' => 'Rare watches yield +1 account',
+        'tissot' => 'Tissot Watch',
+        'frequency2' => 'Watches appear more often',
+        'rare2' => 'Rare watches yield +2 accounts',
+        'duration2' => 'Watches are displayed longer',
+        'xp1' => '10% more watch XP',
+        'omega' => 'Omega Watch',
     ]
 ];
