@@ -284,7 +284,7 @@ function Game() {
      * Init the game, events and timers
      */
     self.init = function() {
-        console.log('Game initialitation');
+        console.log('Game initialisation');
 
         // Load data
         self.load();
@@ -516,7 +516,6 @@ function Game() {
     };
 
     self.clickWatch = function(watch) {
-        console.log('clicked on a watch', watch);
         if (self.visibleWatch) {
             self.visibleWatch = false;
 
@@ -847,7 +846,7 @@ function Game() {
         $.each(self.help, function (index, value) {
             $('#farming_' + index + '_amount').html(humanizeNumber(self.getHelp(index)));
             $('#farming_' + index + '_effect').html(self.help[index].mps + " MPS");
-            $('#farming_' + index + '_cost').html("CHF " + self.getHelpCost(index));
+            $('#farming_' + index + '_cost').html("CHF " + humanizeNumber(self.getHelpCost(index)));
         });
     };
 
@@ -999,7 +998,7 @@ function Game() {
         for (i = 0; i < self.getHelp(item); i++) {
             cost *= self.help[item].increment;
         }
-        return humanizeNumber(cost);
+        return cost;
     };
 
     /**
