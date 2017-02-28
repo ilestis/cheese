@@ -14,7 +14,7 @@ function Game() {
         },
         'xp_increment': {
             'farming': 0.5,
-            'watch': 1
+            'watch': 5
         },
         'level': {
             'farming': 0,
@@ -721,6 +721,7 @@ function Game() {
         }
 
         self.addXP(type, amount);
+
         // Level up?
         if (self.getXP(type) >= self.xp[type].target[self.getLevel(type)]) {
             self.addLevel(type);
