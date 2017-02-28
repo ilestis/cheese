@@ -353,7 +353,7 @@ function Game() {
      */
     self.initViews = function() {
         $.each(self.milk, function(index, value) {
-            $('#milk_' + index + '_value').html("CHF " + humanizeNumber(self.getMilk(index)));
+            $('#milk_' + index + '_value').html("CHF " + humanizeNumber(self.milk[index]));
         });
 
         self.updateImprovementViews();
