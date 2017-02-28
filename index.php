@@ -272,5 +272,6 @@ $improvements = require('improvements.php');
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/game.js"></script>
+<?php include_once('analyticstracking.php'); ?>
 </body>
 </html>
