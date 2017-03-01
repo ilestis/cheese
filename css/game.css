@@ -146,6 +146,9 @@ li.flag {
 .watch_swatch {
     background-image: url('../img/swatch.png');
 }
+.watch_tissot {
+    background-image: url('../img/tissot.png');
+}
 .watch_omega  {
     background-image: url('../img/omega.png');
 }
