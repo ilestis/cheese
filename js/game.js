@@ -914,8 +914,8 @@ function Game() {
         self.help.machine.mps = Math.round(mps * 100) / 100;
 
         // Watch XP
-        xp = 1;
-        if (self.hasImprovement('watch', 'xp1')) { xp = 2; }
+        xp = 10;
+        if (self.hasImprovement('watch', 'xp1')) { xp += 1; }
         self.setXPIncrement('watch', xp);
 
         // Store cash
