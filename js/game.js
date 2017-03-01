@@ -439,8 +439,12 @@ function Game() {
      */
     self.sellAll = function() {
         $.each(self.milk, function(index, value) {
-            self.sellMilk(index);
+            amount = self.getMilk(index) * self.milk[index];
+            self.addMoney(amount);
+            self.resetMilk(index);
         });
+
+        self.updateViews();
     };
 
     /**
