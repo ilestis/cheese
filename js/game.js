@@ -2,6 +2,11 @@ function Game() {
     var self = this;
 
     /**
+     * Version of the game
+     */
+    self.version = '0.0.3';
+
+    /**
      * Progress of the game. All data that is savable
      * @type {{}}
      */
@@ -13,8 +18,8 @@ function Game() {
             'watch': 0
         },
         'xp_increment': {
-            'farming': 0.5,
-            'watch': 5
+            'farming': 0.5, // 100 clicks for level 1
+            'watch': 10 // 5 watches for level 1
         },
         'level': {
             'farming': 0,
@@ -29,6 +34,8 @@ function Game() {
             },
             'watch': {
                 'swatch': true
+            },
+            'store': {
             }
         },
         'help': {
@@ -120,6 +127,15 @@ function Game() {
         'horse': 25,
         'reindeer': 200,
         'yak': 4000
+    };
+
+    /**
+     * Bonus provided by the store improvements
+     * @type {{cash: number, xp: number}}
+     */
+    self.store = {
+        'cash': 0,
+        'xp': 0
     };
 
     /**
@@ -247,6 +263,56 @@ function Game() {
                 'level': 4,
                 'xp': 500
             }
+        },
+        'store': {
+            'cash1': {
+                'cost': 1
+            },
+            'cash2': {
+                'cost': 5
+            },
+            'cash3': {
+                'cost': 25
+            },
+            'cash4': {
+                'cost': 50
+            },
+            'cash5': {
+                'cost': 100
+            },
+            'cash6': {
+                'cost': 250
+            },
+            'cash7': {
+                'cost': 350
+            },
+            'cash8': {
+                'cost': 500
+            },
+            'xp1': {
+                'cost': 1
+            },
+            'xp2': {
+                'cost': 5
+            },
+            'xp3': {
+                'cost': 25
+            },
+            'xp4': {
+                'cost': 50
+            },
+            'xp5': {
+                'cost': 100
+            },
+            'xp6': {
+                'cost': 250
+            },
+            'xp7': {
+                'cost': 350
+            },
+            'xp8': {
+                'cost': 500
+            }
         }
     };
 
@@ -280,6 +346,7 @@ function Game() {
         }
     };
 
+
     /**
      * Init the game, events and timers
      */
@@ -292,6 +359,7 @@ function Game() {
         self.initClicks();
         self.initViews();
         self.updateViews();
+        self.updateImprovementBonuses();
 
         self.interval = setInterval(function() { self.timer(); }, 1000);
         self.interval = setInterval(function() { self.save(); }, 10000);
@@ -338,11 +406,17 @@ function Game() {
             })
         });
 
-
         // watch improvement buttons
         $.each(self.improvements.watch, function(index, value) {
             $('#watch_improvement_' + index + '_buy').click(function() {
                 self.buy('watch', index);
+            })
+        });
+
+        // store improvement buttons
+        $.each(self.improvements.store, function(index, value) {
+            $('#store_improvement_' + index + '_buy').click(function() {
+                self.buy('store', index);
             })
         });
 
@@ -437,6 +511,9 @@ function Game() {
     self.updateResources = function() {
         mps = self.getMps();
         self.produceMilk(mps);
+
+        chps = self.getChps();
+        self.addMoney(chps);
     };
 
     /**
@@ -444,13 +521,21 @@ function Game() {
      * @returns {number}
      */
     self.getMps = function() {
-        mps = 0;
+        var mps = 0;
         $.each(self.help, function(index, value) {
             if (self.getHelp(index) > 0) {
                 mps += self.getHelp(index) * self.help[index].mps;
             }
         });
         return mps;
+    };
+
+    /**
+     * Calculate the ch per seconds
+     * @returns {number}
+     */
+    self.getChps = function() {
+        return self.store.cash;
     };
 
     /**
@@ -468,14 +553,26 @@ function Game() {
     self.buy = function(type, improvement) {
         if (self.hasImprovement(type, improvement) == false) {
             imp = self.improvements[type][improvement];
-            // Check for money and level
-            if (self.getMoney() >= imp.cost && self.getLevel(type) >= imp.level) {
-                self.removeMoney(imp.cost);
-                self.enableImprovement(type, improvement);
-                
-                self.updateImprovementBonuses();
-                self.updateImprovementViews();
-                self.updateHelpViews();
+
+            if (type == 'store') {
+                if (self.getAccount() >= imp.cost) {
+                    self.removeAccount(imp.cost);
+                    self.enableImprovement(type, improvement);
+
+                    self.updateImprovementBonuses();
+                    self.updateImprovementViews();
+                    self.updateHelpViews();
+                }
+            } else {
+                // Check for money and level
+                if (self.getMoney() >= imp.cost && self.getLevel(type) >= imp.level) {
+                    self.removeMoney(imp.cost);
+                    self.enableImprovement(type, improvement);
+
+                    self.updateImprovementBonuses();
+                    self.updateImprovementViews();
+                    self.updateHelpViews();
+                }
             }
         }
     };
@@ -649,7 +746,7 @@ function Game() {
      * @returns {*}
      */
     self.hasImprovement = function(type, improvement) {
-        if (typeof self.progress.improvements[type][improvement] === 'undefined') {
+        if (typeof(self.progress.improvements[type][improvement]) === 'undefined') {
             self.progress.improvements[type][improvement] = false;
         }
         return self.progress.improvements[type][improvement];
@@ -718,6 +815,12 @@ function Game() {
         // Farming has temp bonuses available
         if (type == 'farming' && self.bonus.farming.xp > 0) {
             amount += self.bonus.farming.xp;
+        }
+
+        // Store bonus?
+        if (self.store.xp > 0) {
+            amount *= 1 + (self.store.xp / 100);
+            amount = Math.round(amount * 100) / 100;
         }
 
         self.addXP(type, amount);
@@ -810,6 +913,30 @@ function Game() {
         xp = 1;
         if (self.hasImprovement('watch', 'xp1')) { xp = 2; }
         self.setXPIncrement('watch', xp);
+
+        // Store cash
+        var cash = 0;
+        if (self.hasImprovement('store', 'cash1')) cash += 1;
+        if (self.hasImprovement('store', 'cash2')) cash += 5;
+        if (self.hasImprovement('store', 'cash3')) cash += 25;
+        if (self.hasImprovement('store', 'cash4')) cash += 100;
+        if (self.hasImprovement('store', 'cash5')) cash += 500;
+        if (self.hasImprovement('store', 'cash6')) cash += 2500;
+        if (self.hasImprovement('store', 'cash7')) cash += 7500;
+        if (self.hasImprovement('store', 'cash8')) cash += 25000;
+        self.store.cash = cash;
+
+        // Store xp
+        xp = 0;
+        if (self.hasImprovement('store', 'xp1')) xp += 1;
+        if (self.hasImprovement('store', 'xp2')) xp += 1;
+        if (self.hasImprovement('store', 'xp3')) xp += 1;
+        if (self.hasImprovement('store', 'xp4')) xp += 1;
+        if (self.hasImprovement('store', 'xp5')) xp += 1;
+        if (self.hasImprovement('store', 'xp6')) xp += 1;
+        if (self.hasImprovement('store', 'xp7')) xp += 1;
+        if (self.hasImprovement('store', 'xp8')) xp += 1;
+        self.store.xp = xp;
     };
 
     /**
@@ -838,6 +965,10 @@ function Game() {
         $.each(self.improvements.watch, function(index, value) {
             self.parseImprovement('watch', index);
         });
+
+        $.each(self.improvements.store, function(index, value) {
+            self.parseImprovement('store', index);
+        });
     };
 
     /**
@@ -852,7 +983,7 @@ function Game() {
     };
 
     /**
-     *
+     * Parse an improvement to make it pretty in html
      * @param type
      * @param index
      */
@@ -861,8 +992,18 @@ function Game() {
         var preSelector = '#' + type + '_improvement_';
         var sel = $(preSelector + index);
         if (sel.length == 1) {
-            $(preSelector + index + '_cost').html('CHF ' + humanizeNumber(imp.cost));
-            $(preSelector + index + '_level').html(imp.level);
+
+            // Store costs accounts, not money
+            if (type == 'store') {
+                $(preSelector + index + '_cost').html(humanizeNumber(imp.cost));
+            } else {
+                $(preSelector + index + '_cost').html('CHF ' + humanizeNumber(imp.cost));
+            }
+
+            // Level limitation
+            if (imp.level) {
+                $(preSelector + index + '_level').html(imp.level);
+            }
 
             // Already activated
             if (self.hasImprovement(type, index)) {
@@ -870,7 +1011,7 @@ function Game() {
                 $(preSelector + index + '_buy').html('Enabled');
             }
             // We can have it
-            else if (imp.level <= self.getLevel(type)) {
+            else if (typeof(imp.level) == 'undefined' || imp.level <= self.getLevel(type)) {
                 $(preSelector + index + '_buy').removeAttr('disabled');
             }
             // Not ready
@@ -1015,6 +1156,19 @@ function Game() {
         self.progress.milk[item] = 0;
     };
 
+    /**
+     * Store
+     */
+    self.hasStore = function(item) {
+        if (typeof(self.progress.store[item]) == 'undefined') {
+            self.progress.store[item] = false;
+        }
+        return self.progress.store[item];
+    };
+    self.setStore = function(item) {
+        self.progress.store[item] = true;
+    };
+
 
     /**
      * Save progress
@@ -1028,7 +1182,7 @@ function Game() {
             localStorage.setItem('progress', data);
         }
 
-        var timeout = setTimeout(self.enableSave, 1500); // pretend saving takes a while
+        var timeout = setTimeout(self.enableSave, 800); // pretend saving takes a while
     };
 
     /**
@@ -1048,6 +1202,16 @@ function Game() {
             var progress = localStorage.getItem('progress');
             if (progress !== null) {
                 self.progress = JSON.parse(progress);
+
+                // Fix starting watch increment to 10 if it started wrong
+                if (self.progress.xp_increment.watch < 10) {
+                    self.progress.xp_increment.watch += 9;
+                }
+
+                // Add store improvements
+                if (typeof(self.progress.improvements.store) == 'undefined') {
+                    self.progress.improvements.store = {};
+                }
             }
         }
     }

@@ -78,6 +78,7 @@ $improvements = require('improvements.php');
                     <li role="presentation" class="active"><a href="#inventory" aria-controls="inventory" role="tab" data-toggle="tab">Inventory</a></li>
                     <li role="presentation"><a href="#farm_tab" aria-controls="farm_tab" role="tab" data-toggle="tab">Farm</a></li>
                     <li role="presentation"><a href="#watches_tab" aria-controls="watches_tab" role="tab" data-toggle="tab">Watches</a></li>
+                    <li role="presentation"><a href="#store_tab" aria-controls="store_tab" role="tab" data-toggle="tab">Store</a></li>
                 </ul>
 
                 <div class="tab-content">
@@ -254,6 +255,41 @@ $improvements = require('improvements.php');
                                     <td id="watch_improvement_<?=$id?>_level"></td>
                                     <td>
                                         <button id="watch_improvement_<?=$id?>_buy" class="btn btn-sm btn-primary">
+                                            Buy
+                                        </button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="store_tab">
+                        <h2>Store</h2>
+
+                        <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <strong>Grow your stash!</strong> Empty accounts to buy some juicy bonuses.
+                        </div>
+
+
+                        <h3>Improvements</h3>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Cost</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody id="store_improvements">
+                            <?php foreach ($improvements['store'] as $id => $name) : ?>
+                                <tr id="store_improvement_<?=$id?>">
+                                    <td><?=$name?></td>
+                                    <td id="store_improvement_<?=$id?>_cost"></td>
+                                    <td>
+                                        <button id="store_improvement_<?=$id?>_buy" class="btn btn-sm btn-primary">
                                             Buy
                                         </button>
                                     </td>

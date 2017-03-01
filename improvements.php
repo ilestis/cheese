@@ -50,5 +50,23 @@ return [
         'duration2' => 'Watches are displayed longer',
         'xp1' => '10% more watch XP',
         'omega' => 'Omega Watch',
+    ],
+    'store' => [
+        'cash1' => '+ CHF 1.00 / person',
+        'cash2' => '+ CHF 5.00 / person',
+        'cash3' => '+ CHF 25.00 / person',
+        'cash4' => '+ CHF 100.00 / person',
+        'cash5' => '+ CHF 500.00 / person',
+        'cash6' => '+ CHF 2\'500.00 / person',
+        'cash7' => '+ CHF 7\'500.00 / person',
+        'cash8' => '+ CHF 25\'000.00 / person',
+        'xp1' => '+ 1% XP',
+        'xp2' => '+ 1% XP',
+        'xp3' => '+ 1% XP',
+        'xp4' => '+ 1% XP',
+        'xp5' => '+ 1% XP',
+        'xp6' => '+ 1% XP',
+        'xp7' => '+ 1% XP',
+        'xp8' => '+ 1% XP',
     ]
 ];
